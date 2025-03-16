@@ -1,0 +1,20 @@
+Question1: 
+-Which of the two programs, Program1 and Program2, has best performance, or are the
+performance of the two programs about the same?
+
+Answer:
+-Program2 (Parallel Streams) has significantly better performance than Program1 (Producer-Consumer with ForkJoinPool). In testing, Program2 completes execution in about 2 seconds, while Program1 takes around 8.5 seconds. This is because Program2 processes all tasks (download, analyze, categorize) in a single pass, efficiently distributing work using ForkJoinPool’s work-stealing mechanism. In contrast, Program1 processes tasks in separate stages using BlockingQueues, which introduces synchronization overhead and delays between stages. As a result, Program2 achieves better efficiency and faster execution.
+
+Question2: 
+-Is there any difference in which order different work tasks are performed in the two
+different solutions, Program1 and Program2?
+
+Answer:
+-The order of execution differs between the two programs. Program1 follows a strict stage-by-stage process where all webpages are first downloaded, then analyzed, and finally categorized. Each stage must wait for the previous one to finish, leading to potential bottlenecks. In contrast, Program2 processes each webpage independently through all stages in a continuous pipeline, meaning some pages may be categorized while others are still downloading. This approach allows Program2 to work more efficiently without unnecessary delays.
+
+Question3: 
+-Which of the two programs, Program1 and Program3, has best performance, or are the
+performance of the two programs about the same?
+
+Answer:
+-The performance of Program1 (ForkJoinPool) and Program3 (MyExecutor) is about the same. Both programs parallelize the same workload using different threading models, but in practice, they complete execution in approximately the same time.ForkJoinPool benefits from work-stealing, dynamically redistributing tasks among threads to prevent idle time. MyExecutor, on the other hand, relies on a fixed number of worker threads with a blocking queue, which introduces some synchronization overhead but maintains stable parallel execution.Despite the different implementations, both approaches effectively utilize system resources, and in testing, they achieve nearly identical execution times.
